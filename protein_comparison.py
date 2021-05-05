@@ -6,12 +6,6 @@ class Protein:
     """
     Class protein contains protein's sequence, id from Api and id from PDB
     """
-    def __init__(self, sequence, api_id, pdb_id):
-        self.sequence = sequence
-        self.api_id = api_id
-        self.pdb_id = pdb_id
-    def __str__(self):
-        return f'Object of class Protein with ABI ID {self.api_id},and PDB ID :{self.pdb_id}'
 
 class DataSourceApi: 
     """
@@ -19,6 +13,28 @@ class DataSourceApi:
     Take path to file contains ids to download.
     Returns downloaded data with "yield".
     """
+
+class DataSourcePDB():
+    """
+    Class which connects to PDB proteins base.
+    Take id list contains ids to download.
+    Returns downloaded data with "yield".
+    """
+
+
+
+class Protein:
+
+    def __init__(self, sequence, api_id, pdb_id):
+        self.sequence = sequence
+        self.api_id = api_id
+        self.pdb_id = pdb_id
+
+    def __str__(self):
+        return f'Object of class Protein with ABI ID {self.api_id},and PDB ID :{self.pdb_id}'
+
+class DataSourceApi: 
+
     def __init__(self, path_to_file):
         self.path_to_file = path_to_file
 
@@ -26,13 +42,13 @@ class DataSourceApi:
         return f'Data Source at path {self.path_to_file}'
 
     def __enter__(self):
-        with open(self.path_to_file, 'rt') as data_file: #otwieramy plik ktory zawiera id bialek
+        with open(self.path_to_file, 'rt') as data_file: #contains ids of proteins
             try:
                 print("Downloading data from API database.")    
                 for line in data_file:
                     uniprot_id = line.strip('\n').strip()
-                    url = f'https://www.ebi.ac.uk/proteins/api/proteins/{uniprot_id}' #tworzymy poszczegolne adresy
-                    response = requests.get(url, headers={'Accept': 'application/json'}) #pobieramy dane spod linku żądając wersji json
+                    url = f'https://www.ebi.ac.uk/proteins/api/proteins/{uniprot_id}' 
+                    response = requests.get(url, headers={'Accept': 'application/json'}) 
                     if response.ok:
                         json_data = json.loads(response.text)
                         yield json_data
@@ -42,12 +58,10 @@ class DataSourceApi:
     def __exit__(self, exc, ext, tb):
         print("Done")
 
+
 class DataSourcePDB: 
-    """
-    Class which connects to PDB proteins base.
-    Take id list contains ids to download.
-    Returns downloaded data with "yield".
-    """
+
+
     def __init__(self, id_list):
         self.id_list = id_list
 
